@@ -24,7 +24,7 @@ public class Book {
     @Column(nullable = false)
     private String isbn;
     @Column(nullable = false)
-    private int numberOfCopies;
+        private int numberOfCopies;
     @Column(nullable = false)
     private String section;
 
