@@ -1,6 +1,4 @@
 package com.basic.notadvance.entity;
-
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
