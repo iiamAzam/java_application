@@ -1,5 +1,7 @@
 package com.basic.notadvance.services;
 
+import com.basic.notadvance.dto.BorrowRecordRequestDTO;
+import com.basic.notadvance.dto.BorrowRecordResponseDTO;
 import com.basic.notadvance.entity.Book;
 import com.basic.notadvance.entity.BorrowRecord;
 import com.basic.notadvance.entity.Member;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BorrowRecordServiceImpl implements BorrowRecordService {
@@ -22,10 +25,9 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                                 this.bookRepository = bookRepository;
                     }
                      @Override
-                     public BorrowRecord borrowBook(Long bookId, Long memberId){
-                         Member getMember  =  memberrepository.findById(memberId).orElseThrow(()-> new RuntimeException("Member not found "));
-                         Book getBook = bookRepository.findById(bookId).orElseThrow(()-> new RuntimeException("Book not found "));
-
+                     public BorrowRecordResponseDTO borrowBook(BorrowRecordRequestDTO dto){
+                         Member getMember  =  memberrepository.findById(dto.getMemberId()).orElseThrow(()-> new RuntimeException("Member not found "));
+                         Book getBook = bookRepository.findById(dto.getBookId()).orElseThrow(()-> new RuntimeException("Book not found "));
                          BorrowRecord borrowRecord = new BorrowRecord();
                          LocalDate today = LocalDate.now();
                          int count = getBook.getNumberOfCopies();
@@ -40,31 +42,43 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
                          borrowRecord.setDueDate(today.plusDays(14));
                          borrowRecord.setReturnDate(null);
                          bookRepository.save(getBook);
-                         borrowRecordRepository.save(borrowRecord);
-                         return  borrowRecord;
+                         BorrowRecord SavedRecord =  borrowRecordRepository.save(borrowRecord);
+                         return  toResponseDTO(SavedRecord);
 
 
                     }
 
     @Override
-    public BorrowRecord returnBook(Long borrowRecordId) {
+    public BorrowRecordResponseDTO returnBook(Long borrowRecordId) {
         BorrowRecord record = borrowRecordRepository.findById(borrowRecordId).orElseThrow(()-> new RuntimeException("Record not found "));
         record.setReturnDate(LocalDate.now());
         Book bookTaken = record.getBook();
         int count  = bookTaken.getNumberOfCopies();
         bookTaken.setNumberOfCopies(count+1);
         bookRepository.save(bookTaken);
-        borrowRecordRepository.save(record);
-        return record;
+       BorrowRecord updatedRecord =  borrowRecordRepository.save(record);
+        return toResponseDTO(updatedRecord);
     }
 
     @Override
-    public List<BorrowRecord> getAllBorrowRecords() {
-        return borrowRecordRepository.findAll();
+    public List<BorrowRecordResponseDTO> getAllBorrowRecords() {
+        return borrowRecordRepository.findAll().stream().map(this::toResponseDTO).collect(Collectors.toList());
     }
-
     @Override
-    public BorrowRecord getBorrowRecordById(Long borrowRecordId) {
-        return borrowRecordRepository.findById(borrowRecordId).orElseThrow(()-> new RuntimeException("Reocrd not found"));
+    public BorrowRecordResponseDTO getBorrowRecordById(Long borrowRecordId) {
+                    BorrowRecord borrowRecord = borrowRecordRepository.findById(borrowRecordId).orElseThrow( ()-> new RuntimeException("record not found of id "+ borrowRecordId));
+                    return toResponseDTO(borrowRecord);
+    }
+    private  BorrowRecordResponseDTO toResponseDTO(BorrowRecord borrowRecord){
+                       return  new BorrowRecordResponseDTO(
+                               borrowRecord.getId(),
+                               borrowRecord.getBook().getId(),
+                               borrowRecord.getBook().getTitle(),
+                               borrowRecord.getMember().getId(),
+                               borrowRecord.getMember().getName(),
+                               borrowRecord.getBorrowDate(),
+                               borrowRecord.getDueDate(),
+                               borrowRecord.getReturnDate()
+                       );
     }
 }

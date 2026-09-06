@@ -1,11 +1,13 @@
 package com.basic.notadvance.services;
-import com.basic.notadvance.entity.Member;
+import com.basic.notadvance.dto.MemberRequestDTO;
+import com.basic.notadvance.dto.MemberResponseDTO;
+
 import java.util.List;
 
 public interface MemberService {
-    Member addMember(Member member);
-    Member getMemberById(Long id);
-    List<Member> getAllMembers();
-    Member updateMember(Long id, Member member);
+    MemberResponseDTO addMember(MemberRequestDTO member);
+    MemberResponseDTO getMemberById(Long id);
+    List<MemberResponseDTO> getAllMembers();
+    MemberResponseDTO updateMember(Long id, MemberRequestDTO member);
     void deleteMember(Long id);
 }

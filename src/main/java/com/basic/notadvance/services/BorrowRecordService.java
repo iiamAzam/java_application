@@ -1,14 +1,16 @@
 package com.basic.notadvance.services;
+import com.basic.notadvance.dto.BorrowRecordRequestDTO;
+import com.basic.notadvance.dto.BorrowRecordResponseDTO;
 import com.basic.notadvance.entity.Book;
 import com.basic.notadvance.entity.BorrowRecord;
 
 import java.util.List;
 
 public interface BorrowRecordService {
-            BorrowRecord borrowBook(Long bookId, Long memberId);
-            BorrowRecord returnBook(Long borrowRecordId);
-            List<BorrowRecord> getAllBorrowRecords();
-            BorrowRecord getBorrowRecordById(Long borrowRecordId);
+            BorrowRecordResponseDTO borrowBook(BorrowRecordRequestDTO Dto );
+            BorrowRecordResponseDTO returnBook(Long borrowRecordId);
+            List<BorrowRecordResponseDTO> getAllBorrowRecords();
+            BorrowRecordResponseDTO getBorrowRecordById(Long borrowRecordId);
 
 
 }

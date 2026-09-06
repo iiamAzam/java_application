@@ -1,5 +1,6 @@
 package com.basic.notadvance.controller;
-import com.basic.notadvance.entity.Member;
+import com.basic.notadvance.dto.MemberRequestDTO;
+import com.basic.notadvance.dto.MemberResponseDTO;
 import com.basic.notadvance.services.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,25 +15,25 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Member> createMember(@RequestBody Member member) {
-        Member savedmember = memberService.addMember(member);
-        return  ResponseEntity.ok(savedmember);
+    public ResponseEntity<MemberResponseDTO> createMember(@RequestBody MemberRequestDTO member) {
+        MemberResponseDTO savedMember = memberService.addMember(member);
+        return  ResponseEntity.ok(savedMember);
 
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Member> getMember(@PathVariable Long id) {
-         Member existMember =  memberService.getMemberById(id);
+    public ResponseEntity<MemberResponseDTO> getMember(@PathVariable Long id) {
+        MemberResponseDTO existMember =  memberService.getMemberById(id);
          return ResponseEntity.ok(existMember);
     }
     @GetMapping
-    public ResponseEntity<List<Member>> getAllMembers() {
-        List<Member> members = memberService.getAllMembers();
+    public ResponseEntity<List<MemberResponseDTO>> getAllMembers() {
+        List<MemberResponseDTO> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable Long id,  @RequestBody Member member) {
-        Member updatedMember = memberService.updateMember(id, member);
+    public ResponseEntity<MemberResponseDTO> updateMember(@PathVariable Long id,  @RequestBody MemberRequestDTO member) {
+        MemberResponseDTO updatedMember = memberService.updateMember(id, member);
         return ResponseEntity.ok(updatedMember);
     }
     @DeleteMapping("/{id}")
